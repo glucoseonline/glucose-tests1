@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Glucose Сынақ Тесті 2027</title>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;600;700&family=Golos+Text:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--em:#1a8a4a;--em2:#0d6e3b;--em3:#e8f5ee;--em4:#c8e8d4;--white:#fff;--dark:#0a1628;--muted:#5a6b85;--border:#d0dcf0;--light:#f0f7f3;--red:#c0392b;--red-light:#fdecea;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Golos Text',sans-serif;background:var(--light);color:var(--dark);min-height:100vh;}
+.screen{display:none;min-height:100vh;}
+.screen.active{display:flex;flex-direction:column;}
+
+/* LOGIN */
+#loginScreen{background:#0a1a0f;align-items:center;justify-content:center;padding:1.5rem;position:relative;overflow:hidden;}
+#loginScreen::before{content:'';position:absolute;top:-200px;right:-200px;width:600px;height:600px;border-radius:50%;background:radial-gradient(circle,rgba(26,138,74,0.2) 0%,transparent 70%);}
+.login-wrap{display:flex;width:100%;max-width:860px;border-radius:20px;overflow:hidden;box-shadow:0 24px 70px rgba(0,0,0,.7);position:relative;z-index:1;}
+.login-left{flex:1;background:#111a12;display:flex;flex-direction:column;justify-content:center;padding:3rem;border-right:1px solid rgba(255,255,255,.07);}
+.ll-tag{font-size:11px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:rgba(255,255,255,.35);margin-bottom:1.5rem;}
+.ll-title{font-family:'Unbounded',sans-serif;font-size:26px;font-weight:700;color:#fff;line-height:1.25;margin-bottom:.75rem;}
+.ll-title span{color:var(--em);}
+.ll-desc{font-size:13px;color:rgba(255,255,255,.45);line-height:1.8;margin-bottom:1.5rem;}
+.ll-pills{display:flex;flex-direction:column;gap:8px;}
+.ll-pill{display:flex;align-items:center;gap:10px;font-size:13px;color:rgba(255,255,255,.6);}
+.ll-dot{width:6px;height:6px;border-radius:50%;background:var(--em);flex-shrink:0;}
+.login-right{width:360px;flex-shrink:0;background:#fff;display:flex;flex-direction:column;justify-content:center;padding:2.5rem 2rem;}
+.lr-logo{font-family:'Unbounded',sans-serif;font-size:20px;font-weight:700;color:var(--em);margin-bottom:1.25rem;}
+.lr-title{font-family:'Unbounded',sans-serif;font-size:15px;font-weight:700;color:var(--dark);margin-bottom:.25rem;}
+.lr-sub{font-size:13px;color:var(--muted);margin-bottom:1.25rem;}
+.fg{margin-bottom:.85rem;}
+.fg label{display:block;font-size:11px;font-weight:600;color:var(--muted);margin-bottom:.3rem;letter-spacing:.08em;text-transform:uppercase;}
+.fg input{width:100%;padding:.75rem 1rem;border:1.5px solid var(--border);border-radius:10px;font-family:'Golos Text',sans-serif;font-size:15px;color:var(--dark);background:#fafafa;outline:none;transition:border-color .2s;}
+.fg input:focus{border-color:var(--em);background:#fff;box-shadow:0 0 0 3px rgba(26,138,74,.1);}
+.btn-login{width:100%;padding:.9rem;background:var(--em);color:#fff;border:none;border-radius:10px;font-family:'Unbounded',sans-serif;font-size:13px;font-weight:600;cursor:pointer;letter-spacing:.04em;margin-top:.25rem;transition:background .2s;}
+.btn-login:hover{background:var(--em2);}
+.login-info{margin-top:1rem;background:var(--em3);border:1px solid var(--em4);border-radius:10px;padding:.75rem 1rem;font-size:12px;color:#2d6a4f;line-height:1.7;}
+
+/* EXAM */
+#examScreen{background:var(--light);}
+.exam-header{background:#fff;border-bottom:1px solid var(--border);padding:0 1rem;display:flex;align-items:center;justify-content:space-between;gap:8px;height:58px;position:sticky;top:0;z-index:100;box-shadow:0 2px 10px rgba(0,0,0,.06);}
+.eh-logo{font-family:'Unbounded',sans-serif;font-size:15px;font-weight:700;color:var(--em);}
+.eh-name{font-size:12px;color:var(--muted);max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.eh-timer{font-family:'Unbounded',sans-serif;font-size:17px;font-weight:700;color:var(--dark);background:var(--em3);padding:.35rem .9rem;border-radius:8px;border:1.5px solid var(--em4);}
+.eh-timer.warn{color:var(--red);background:var(--red-light);border-color:#f5c6c6;}
+.btn-finish-header{padding:.35rem .9rem;background:var(--red);color:#fff;border:none;border-radius:8px;font-family:'Golos Text',sans-serif;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap;transition:background .2s;}
+.btn-finish-header:hover{background:#a93226;}
+
+.subject-tabs{background:#fff;border-bottom:1px solid var(--border);padding:0 1.5rem;display:flex;gap:0;overflow-x:auto;-webkit-overflow-scrolling:touch;}
+.subject-tabs::-webkit-scrollbar{height:3px;}
+.subject-tabs::-webkit-scrollbar-thumb{background:var(--em4);}
+.stab{padding:.75rem 1rem;font-size:13px;font-weight:500;color:var(--muted);cursor:pointer;border-bottom:3px solid transparent;white-space:nowrap;transition:all .2s;flex-shrink:0;}
+.stab:hover{color:var(--em);}
+.stab.active{color:var(--em);border-bottom-color:var(--em);font-weight:600;}
+.stab .sc{font-size:10px;margin-left:5px;background:var(--em3);color:var(--em2);padding:1px 5px;border-radius:8px;}
+
+/* QUESTION AREA — no sidebar */
+.qarea{flex:1;padding:1.5rem;overflow-y:auto;display:flex;justify-content:center;}
+.q-card{background:#fff;border-radius:16px;border:1px solid var(--border);padding:1.75rem;width:100%;max-width:680px;box-shadow:0 2px 16px rgba(0,0,0,.05);}
+.q-progress{height:4px;background:var(--border);border-radius:2px;margin-bottom:1.25rem;overflow:hidden;}
+.q-progress-fill{height:100%;background:var(--em);border-radius:2px;transition:width .3s;}
+.q-meta{font-size:11px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.05em;margin-bottom:.6rem;}
+.q-text{font-size:15px;font-weight:600;line-height:1.6;margin-bottom:1.25rem;color:var(--dark);}
+.context-block{background:var(--em3);border-left:4px solid var(--em);padding:.9rem 1rem;border-radius:0 10px 10px 0;margin-bottom:1.25rem;font-size:12.5px;line-height:1.7;color:#1a3d2b;}
+.context-block strong{font-size:10px;text-transform:uppercase;letter-spacing:.05em;color:var(--em2);display:block;margin-bottom:.4rem;font-weight:600;}
+.options{display:flex;flex-direction:column;gap:8px;}
+.opt{display:flex;align-items:flex-start;gap:12px;padding:12px 14px;border:1.5px solid var(--border);border-radius:10px;cursor:pointer;transition:all .15s;background:#fff;text-align:left;width:100%;font-family:'Golos Text',sans-serif;font-size:14px;line-height:1.5;color:var(--dark);}
+.opt:hover:not(:disabled){border-color:var(--em4);background:var(--em3);}
+.opt:active:not(:disabled){transform:scale(.99);}
+.opt-letter{font-weight:700;color:var(--muted);min-width:20px;font-size:13px;flex-shrink:0;margin-top:1px;}
+.opt.selected{border-color:var(--em);background:var(--em3);}
+.opt.selected .opt-letter{color:var(--em);}
+.opt.correct{border-color:var(--em);background:var(--em3);}
+.opt.correct .opt-letter{color:var(--em2);}
+.opt.wrong{border-color:var(--red);background:var(--red-light);}
+.opt.wrong .opt-letter{color:var(--red);}
+.opt:disabled{cursor:default;}
+.multi-tag{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:600;background:var(--em3);color:var(--em2);border:1px solid var(--em4);padding:3px 9px;border-radius:20px;margin-bottom:10px;}
+.match-hint{font-size:12px;color:var(--em2);margin-bottom:10px;}
+.match-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.match-col-label{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin-bottom:6px;}
+.match-item{padding:9px 12px;border:1.5px solid var(--border);border-radius:8px;cursor:pointer;font-size:13px;line-height:1.4;background:#fff;transition:all .15s;width:100%;text-align:left;font-family:'Golos Text',sans-serif;color:var(--dark);margin-bottom:6px;display:block;}
+.match-item:hover:not(:disabled){border-color:var(--em4);background:var(--em3);}
+.match-item.selected{border-color:var(--em);background:var(--em3);}
+.match-item.matched{border-color:var(--em);background:var(--em3);}
+.match-item.wrong-match{border-color:var(--red);background:var(--red-light);}
+.q-nav-btns{display:flex;justify-content:space-between;align-items:center;margin-top:1.25rem;gap:10px;}
+.btn-nav{padding:10px 20px;border-radius:8px;font-size:14px;font-weight:500;cursor:pointer;border:1.5px solid var(--border);background:#fff;color:var(--dark);font-family:'Golos Text',sans-serif;transition:all .15s;}
+.btn-nav:hover:not(:disabled){background:var(--light);}
+.btn-nav:disabled{opacity:.35;cursor:default;}
+.btn-nav-primary{background:var(--em);border-color:var(--em);color:#fff;}
+.btn-nav-primary:hover:not(:disabled){background:var(--em2);}
+.q-counter{font-size:12px;color:var(--muted);}
+
+/* RESULT */
+#resultScreen{background:var(--light);padding:1.5rem;align-items:center;overflow-y:auto;}
+.result-card{background:#fff;border-radius:20px;border:1px solid var(--border);padding:2rem 1.75rem;max-width:640px;width:100%;box-shadow:0 8px 40px rgba(0,0,0,.08);}
+.result-header{text-align:center;margin-bottom:1.75rem;padding-bottom:1.75rem;border-bottom:1px solid var(--border);}
+.result-medal{font-size:52px;margin-bottom:.4rem;}
+.result-name{font-family:'Unbounded',sans-serif;font-size:12px;color:var(--muted);margin-bottom:.4rem;letter-spacing:.05em;}
+.result-score{font-family:'Unbounded',sans-serif;font-size:48px;font-weight:700;color:var(--em);line-height:1;margin-bottom:.2rem;}
+.result-score span{font-size:20px;color:var(--muted);font-weight:400;}
+.result-pct{font-size:14px;color:var(--muted);}
+.result-subjects{display:flex;flex-direction:column;gap:8px;margin-bottom:1.5rem;}
+.rs-row{display:flex;align-items:center;gap:10px;padding:12px 14px;background:var(--light);border-radius:10px;}
+.rs-name{font-weight:600;font-size:13px;flex:1;}
+.rs-bar-wrap{flex:2;height:6px;background:var(--border);border-radius:3px;overflow:hidden;}
+.rs-bar{height:100%;background:var(--em);border-radius:3px;transition:width .6s ease;}
+.rs-score{font-family:'Unbounded',sans-serif;font-size:11px;font-weight:600;color:var(--em);min-width:50px;text-align:right;}
+.result-note{text-align:center;font-size:12px;color:var(--muted);line-height:1.7;padding:.85rem;background:var(--light);border-radius:10px;margin-bottom:1.25rem;}
+
+.review-title{font-size:14px;font-weight:600;margin-bottom:.75rem;}
+.review-item{background:#fff;border:1px solid var(--border);border-radius:8px;padding:12px 14px;margin-bottom:7px;}
+.review-item.r-correct{border-left:4px solid var(--em);}
+.review-item.r-wrong{border-left:4px solid var(--red);}
+.ri-num{font-size:10px;font-weight:600;text-transform:uppercase;color:var(--muted);margin-bottom:3px;}
+.ri-q{font-size:13px;font-weight:500;margin-bottom:5px;line-height:1.4;}
+.ri-ans{font-size:12px;line-height:1.6;}
+.ri-ans .c{color:#1a5c35;font-weight:500;}
+.ri-ans .w{color:var(--red);}
+
+/* MOBILE */
+@media(max-width:640px){
+  .login-left{display:none;}
+  .login-right{width:100%;padding:2rem 1.5rem;}
+  .login-wrap{max-width:400px;}
+  .eh-name{display:none;}
+  .stab{font-size:12px;padding:.65rem .75rem;}
+  .q-card{padding:1.25rem;border-radius:12px;}
+  .q-text{font-size:14px;}
+  .opt{font-size:13px;padding:10px 12px;}
+  .match-grid{grid-template-columns:1fr;}
+  .result-card{padding:1.5rem 1.25rem;}
+  .result-score{font-size:40px;}
+  .btn-nav{padding:9px 14px;font-size:13px;}
+  .qarea{padding:1rem;}
+}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="loginScreen" class="screen active">
+  <div class="login-wrap">
+    <div class="login-left">
+      <div class="ll-tag">Glucose · Білім платформасы</div>
+      <div class="ll-title">Сынақ тесті <span>2027</span></div>
+      <div class="ll-desc">Нағыз ҰБТ форматындағы тест.<br>5 пән · 140 сұрақ · 4 сағат</div>
+      <div class="ll-pills">
+        <div class="ll-pill"><div class="ll-dot"></div>Оқу сауаттылығы</div>
+        <div class="ll-pill"><div class="ll-dot"></div>Математикалық сауаттылық</div>
+        <div class="ll-pill"><div class="ll-dot"></div>Қазақстан тарихы</div>
+        <div class="ll-pill"><div class="ll-dot"></div>Биология</div>
+        <div class="ll-pill"><div class="ll-dot"></div>Химия</div>
+      </div>
+    </div>
+    <div class="login-right">
+      <div class="lr-logo">GLUCOSE</div>
+      <div class="lr-title">Кіру</div>
+      <div class="lr-sub">Деректеріңізді толтырыңыз</div>
+      <div class="fg"><label>Тегі</label><input type="text" id="inLastName" placeholder="Сейткали"></div>
+      <div class="fg"><label>Аты</label><input type="text" id="inFirstName" placeholder="Айгерім"></div>
+      <div class="fg"><label>Телефон нөмірі</label><input type="tel" id="inPhone" placeholder="+7 777 000 00 00"></div>
+      <button class="btn-login" onclick="startExam()">Тестті бастау →</button>
+      <div class="login-info">⏱ Тест уақыты: <b>4 сағат</b><br>📝 Барлық сұрақтарға жауап беруге тырысыңыз</div>
+    </div>
+  </div>
+</div>
+
+<!-- EXAM -->
+<div id="examScreen" class="screen">
+  <div class="exam-header">
+    <div class="eh-logo">GLUCOSE</div>
+    <div class="eh-name" id="headerName"></div>
+    <div class="eh-timer" id="timerEl">4:00:00</div>
+    <button class="btn-finish-header" onclick="confirmFinish()">⬛ Аяқтау</button>
+  </div>
+  <div class="subject-tabs" id="subjectTabs"></div>
+  <div class="qarea">
+    <div id="qcard"></div>
+  </div>
+</div>
+
+<!-- RESULT -->
+<div id="resultScreen" class="screen">
+  <div class="result-card" id="resultCard"></div>
+</div>
+
+<script>
+const BOT_TOKEN='8990018387:AAFfEf8-5k_0w-h4jIuulKL0uwSNHoDKrj4';
+const CHAT_ID='6970145934';
+
+const SUBJECTS=[
+{name:'Оқу сауаттылығы',emoji:'📖',count:10,
+ ctxMap:{0:1,1:1,2:3,3:3,4:3,5:6,6:6,7:6,8:6,9:6},
+ contexts:{
+  1:'1-мәтін\nТойға немесе асқа қымыз әкелген сабаны біржолата сарқып босатпайды, түбінде міндетті түрде бір ожау болса да қымыз қалуы керек. Жерге төгілген ақты (сүт, айран) басуға болмайды. Сүт төгілген жерге тұз себеді. Іркітті ашық далада піспейді, құты кетіп қалады. Сауылған сүттің бетін ашып қоюға болмайды. Беті ашық қалса, шаң-тозаң немесе улы жәндіктер түсіп кетіп, сүтті бүлдіреді. Сүтті үрлеп ішпейді, майлылығы азаяды. Сүттен жасалған тағамдарды жерге түкіріп тастауға болмайды. Сүт сауатын шелекті су басына апармайды, құты кетіп қалады. Малдың бірінші сауымынан алынған майды асқа қолданбайды. Онымен босағаны, табалдырықтың жоғарғы бөлігін майлайды.',
+  3:'2-мәтін — Кимешек\nҮйге келген қонақ ілулі тұрған кимешектің үлгісіне қарап-ақ, отбасындағы әйелдердің жас мөлшері, талғамы мен дәрежесінен хабардар болған. Кимешек әрі төлқұжат, әрі мінездеме рөлін атқарған. «Кимешек – пайғамбардың ноқтасы» — «ноқта» сөзі тыйым, тәртіп, белгілі бір өлшем деген түсінікті білдіреді. Кимешектің ерекшелігі – тек басты жабатын бүркеншектігі ғана емес, сәнді әшекейі мен әдемі пішіні. Мәні сақталады, сәні уақыт үрдісіне, жеке ісмердің шеберлік деңгейіне сай өзгереді.',
+  6:'3-мәтін — Сабыр түбі – сары алтын\nБір патшаның ғажайып бағы болыпты. Патша бағбандарға: «Ең әдемі гүл өсіретін болса, сыйлық берем» – депті. Бірінші бағбан асығып гүл күлтелерін қолымен ашып тастады – барлық гүлі солып қалды. Екінші бағбан шыны құтыда өсіріп, нәзік сабақ желге шыдай алмады. Үшінші бағбан бүр жара бастағанда үзіп алып жүгірді – сарайға жеткенше солып қалды. Төртінші бағбан шыдамдылықпен күтіп, хош иісті гүл бағын өсірді. Патша сыры неде деп сұрады. Бағбан: «Сабырлылықта» деді.'
+ },
+ questions:[
+  {text:'Мәтіндегі сабаға қатысты тағам түрі',opts:['айран','қымыз','май','сүт'],ans:1},
+  {text:'Сүт сауатын шелекті су басына апармау ырымының мәні',opts:['майлылығы азаяды','сүтті бүлдіреді','құты кетіп қалады','улы жәндіктер түседі'],ans:2},
+  {text:'Жеке ісмер өзгерте алады',opts:['Мәнін','Матасын','Сәнін','Атауын'],ans:2},
+  {text:'Кимешектің ерекшелігіне сәйкес мақал',opts:['Ағаш көркі – жапырақ, Адам көркі – шүберек.','Кісінің кісілігі Киімінде емес, білімінде.','Кеңесті хан азбайды, Кең киім тозбайды.','Анадан өнеге көрмеген қыз жаман, Атадан тағылым алмаған ұл жаман'],ans:0},
+  {text:'Қонақ отбасындағы әйелдің жас мөлшерінен хабардар болған',opts:['Әшекейі арқылы','Ісмерлігі арқылы','Кимешегі арқылы','Кісі күтуі арқылы'],ans:2},
+  {text:'Хош иісті гүл бағын өсірудің сыры',opts:['Ұқыптылық','Еңбекқорлық','Ақылдылық','Сабырлылық'],ans:3},
+  {text:'Төртінші бағбанның ойынша гүл өсіру үшін қажет ең басты нәрсе',opts:['Уақыт және жылылық','Су мен топырақ','Топырақ пен күннің көзі','Уақыт пен көлеңке'],ans:0},
+  {text:'Бірінші және үшінші бағбанның іс-әрекетіндегі кемшілік',opts:['Ұқыпсыздық','Асығыстық','Жігерсіздік','Шалағайлық'],ans:1},
+  {text:'Патшаның бағбандарға бергені',opts:['Райхангүл','Жер телімі','Сыйлық','Гүл тұқымы'],ans:1},
+  {text:'Мәтін оқиғасына қатысатын бағбандардың саны',opts:['4','3','6','2'],ans:0}
+ ]},
+{name:'Математика',emoji:'🔢',count:10,
+ questions:[
+  {text:'Алғашқы күні матаның 60%-ын, келесі күні қалғанының 40%-ын қолданғанда 96 м мата қалған болса, барлығы неше метр мата болған?',opts:['300 м','360 м','400 м','250 м'],ans:2},
+  {text:'Тимур – ¼, Айбек – 40%, Айдын – 28 кг өрік терді. Айбек терген өріктің массасы',opts:['24 кг','20 кг','16 кг','32 кг'],ans:1},
+  {text:'60×80×100 см параллелепипедке қыры 20 см текше жәшіктер. Ең көп дегенде неше жәшік сияды?',opts:['60','65','84','80'],ans:0},
+  {text:'Ұпайлар: 7; 1; 8; 9; ?; 26; 43. Жазылмай қалған ұпай',opts:['22','17','24','13'],ans:1},
+  {text:'8 тәулік температура: 15,19,21,18,22,25,18,22°C. Медиана',opts:['22°C','20°C','24°C','23°C'],ans:1},
+  {text:'10 әзілден 5-ін таңдау (ретсіз). Неше топтама?',opts:['30240','252','120','28800'],ans:1},
+  {text:'Қатар: 1;2;4;8;x;32;y. y²/x² өрнегінің мәні',opts:['16','64','49','25'],ans:0},
+  {text:'Ауданы 104-ке тең квадраттағы боялған бөліктер ауданы',opts:['26','19','23','14'],ans:0},
+  {text:'Айырмасы 0,1-ге тең болатын бөлшектер',opts:['⅕; ⅔','⅖; ¼','⅗; ½','⅗; ⅓'],ans:2},
+  {text:'A мен B қиылысатын сурет. Сәйкес теңдік',opts:['A ∪ B = C','A ⊆ C = B','A ∩ B = C','B ⊆ C = A'],ans:2}
+ ]},
+{name:'Қазақстан тарихы',emoji:'📜',count:20,
+ questions:[
+  {text:'Ботай мәдениетін зерттеп, ботайлықтардың алғаш рет жылқыны қолға үйреткенін дәлелдеген ғалым',opts:['В.Ф. Зайберт','К. Байпаков','Н.Н. Пантусов','Н. Масанов'],ans:0},
+  {text:'XIV ғасырдың 80-жылдары Куликов жазығында Дмитрий Донскойдан жеңілген Алтын Орда билеушісі',opts:['Өзбек','Мамай','Бердібек','Жәнібек'],ans:1},
+  {text:'«Жеті жарғы» заңын қабылдаған хан',opts:['Абылай','Қасым','Есім','Тәуке'],ans:3},
+  {text:'II Мемлекеттік Думада шаруаларды қоныс аударту саясатының жағымсыз жағын баяндаған',opts:['Ә. Бөкейхан','А. Бірімжанов','Б. Қаратаев','М. Тынышбаев'],ans:2},
+  {text:'1959 жылы жазда әлеуметтік мәселелерге қатысты наразылық оқиғасы',opts:['Теміртау оқиғасы','Желтоқсан оқиғасы','Целиноград оқиғасы','Новочеркасск оқиғасы'],ans:0},
+  {text:'Тасмола мәдениетіне тән белгі',opts:['Пазырық кілемі табылды','Жер астындағы дәліз болды','Мәйіт пен жылқы жерленетін екі қорған','«Алтын адам» табылды'],ans:2},
+  {text:'Орал облысындағы ұлт-азаттық көтерілісті басуға жіберілген офицерлер',opts:['Перовский мен Веревкин','Фитингофт пен Перовский','Рукин мен Веревкин','Рукин мен Фитингофт'],ans:3},
+  {text:'Қасым ханның моғол билеушілерімен қатынасы нәтижесінде қосылған өңір',opts:['Сарыарқа','Ұлытау','Жетісу','Маңғыстау'],ans:2},
+  {text:'Көтеріліс басшылары мен аймақтар:\nI.Ж.Нұрмұхамедұлы II.С.Датұлы III.К.Қасымұлы IV.И.Тайманұлы\nA.Бүкіл ҚЗ B.Сыр бойы C.Бөкей Ордасы D.Кіші жүз',opts:['I–D; II–A; III–B; IV–C','I–A; II–C; III–D; IV–B','I–C; II–B; III–A; IV–D','I–B; II–D; III–A; IV–C'],ans:3},
+  {text:'Ұлы Отан соғысы батырлары мен шайқас орындары:\nI.М.Ғабдуллин II.І.Айтықов III.С.Баймағамбетов\nA.Ленинград Ә.Сталин Б.Мәскеу',opts:['I–Б; II–Ә; III–А','I–А; II–Ә; III–Б','I–Ә; II–А; III–Б','I–Ә; II–Б; III–А'],ans:0},
+  {text:'«Әскери коммунизм» мәтіні. ХХ ғасырдың басындағы саясаттың атауы',opts:['«Қайта құру» саясаты','«Индустрияландыру» бағыты','«Әскери коммунизм» саясаты','«Жаңа экономикалық саясат»'],ans:2,
+   ctx:'«…Азамат соғысы мен шетелдік интервенция жылдары елдегі материалдық ресурстардың барынша шектеулі кезінде енгізілді. Оның тікелей міндеті өндіріс пен бөлуді орталықтандыру еді. Астық монополиясы мен азық-түлік салғырты, жалпыға бірдей еңбек міндеткерлігі енгізілді. Соғысқа дейінгі уақытпен салыстырғанда жыртылған жер екі еседен аса, жиналған астық үш еседен аса азайды…»'},
+  {text:'Ауыл шаруашылығындағы «әскери коммунизмнің» көрінісі',opts:['ақшалай жалақы орнына карточкалық «паек»','карточкалық «паек» орнына ақшалай жалақы','артық өнімдер қарулы жасақтармен жиналды','ауыр өнеркәсіп мемлекет қарамағына алынды'],ans:2},
+  {text:'Әскери коммунизм саясатының тағы бір көрінісі',opts:['азық-түлік салығы енгізілді','ірі, орта, ұсақ кәсіпорындар жекешелендірілді','мал шаруашылығы дамыды','ашаршылық орын алды'],ans:3},
+  {text:'Әскери коммунизм саясатының белгісі',opts:['ақшалай жалақы орнына карточкалық «паек»','ұсақ кәсіпорындарды жалға беру рұқсаты','азық-түлік салығы енгізілді','жалпыға бірдей еңбек міндеткерлігі жойылды'],ans:0},
+  {text:'Дұрыс дәйек (I.Азық-түлік салғырты II.Айырбас-бөлу жүйесі III.Еңбек міндеткерлігі жойылды IV.Кәсіпорын шаруашылық есепке)',opts:['I, II','II, III','II, IV','III, IV'],ans:0},
+  {text:'Моңғолдардың Қазақстанды жаулап алуының басталған мерзімі',opts:['XIII ғасырдың басы','XIII ғасырдың ортасы','XII ғасырдың ортасы','XI ғасырдың аяғы'],ans:0,
+   ctx:'Карта: Моңғол шапқыншылығы кезіндегі Қазақстан (XIII–XIV ғғ.). 1219 ж. – Моңғол шапқыншылығы Оңтүстіктен басталды.'},
+  {text:'Қазақстан аумағы құрамына кірген Монғол ұлыстары',opts:['Жошы, Құбылай, Хулагу','Жошы, Шағатай, Үгедей','Жошы, Төле, Хулагу','Жошы, Шағатай, Төле'],ans:1},
+  {text:'Моңғол әскерінің негізгі соғыс қимылдары орын алған өңір',opts:['Батыс','Оңтүстік','Орталық','Солтүстік'],ans:1},
+  {text:'Шағатай ұлысына қараған Қазақстан аумағы',opts:['Орталық және Солтүстік','Батыс және Оңтүстік-батыс','Оңтүстік және Оңтүстік-Шығыс','Солтүстік-Шығыс'],ans:2},
+  {text:'Дұрыс дәйек (I.1219–1224жж. толық басып алынды II.Басым бөлігі Шағатайға III.Алдымен Солтүстікке IV.Орталық–Жошыға)',opts:['III, IV','I, IV','II, III','I, II'],ans:1}
+ ]},
+{name:'Биология',emoji:'🧬',count:40,
+ questions:[
+  {text:'Екінші жүктілік: бала резусы оң, ана резусы теріс. Жаңа туған сәбиде қандай ауру?',opts:['Гемофилия','Гемолиздік сарыауру','Агглютинация','Қатерлі анемия'],ans:1},
+  {text:'Секвенирлеудің ферменттік әдісі бойынша ДНҚ тізбегінің синтезін тоқтатады',opts:['ДНҚ полимераза','Химиялық реагенттер','Агарлы гелдегі электрофорез','Дидезоксинуклеотид'],ans:3},
+  {text:'Гемоглобин және басқа да гем болатын нәруыздар',opts:['Фосфопротеин','Гликопротендер','Гемопротеиндер','Липопротеиндер'],ans:2},
+  {text:'Глюкозаның организмдегі тұрақты көзі',opts:['Сахароза','Инсулин','Гликоген','Фруктоза'],ans:2},
+  {text:'Биологиялық синтез реакцияларының жасушадағы жиынтығы',opts:['Анаболизм','Энергетикалық алмасу','Катаболизм','Метаболизм'],ans:0},
+  {text:'Қасаң қабық пен нұрлы қабық арасындағы дөңес кеңістік',opts:['Көзбұршақ','Шыны тәрізді дене','Алдыңғы камера','Көз қарашығы'],ans:2},
+  {text:'Аллопатриялық түр түзілу туындайды',opts:['Географиялық бөгеттің пайда болуынан','Полиплоидия жолымен','Хромосома санын еселеп будандастырудан','Фрагментация арқылы'],ans:0},
+  {text:'Бала жолдасының кіші болуы және жалғыз кіндік артериясымен ерекшеленетін синдром',opts:['Даун','Шерешевский-Тернер','Клаинфельтер','Эдвардс'],ans:3},
+  {text:'Аудан бірлігіндегі дара саны немесе су/топырақ ағзалары үшін көлем',opts:['Популяция өсімі','Тығыздығы','Өсім қарқыны','Популяция саны'],ans:1},
+  {text:'Гольджи аппаратының құрылымдық-функционалды бірлігі',opts:['Центриоль','Пероксисома','Диктиосома','Полисома'],ans:2},
+  {text:'Өтке сары түс беретін пигмент',opts:['Билирубин','Меланин','Ксантофилл','Каратиноид'],ans:0},
+  {text:'1996 жылы геномы картаға түсірілген алғашқы эукариоттық жасуша',opts:['Немотода','Ашытқы','Арабидопсис','Дрозофила'],ans:1},
+  {text:'Суретте 3 санымен көрсетілген митохондрия компоненті',opts:['Ішкі мембранасы','Криста','Мембранааралық кеңістік','Матрикс'],ans:1},
+  {text:'Бұлшықеттердің жиырылуын тіркейтін аспап',opts:['Магнитограф','Динамокардиограф','Кимограф','Осциллограф'],ans:2},
+  {text:'Әртүрлі егіздер тобында айырмашылық дәрежесін зерттейді',opts:['Нәруыз-фермент','Дискорданттылық','Резус-конфликт','Пенетранттық'],ans:1},
+  {text:'Гепатореналды синдром туындайды',opts:['Бауыр мен бүйректің зақымдануынан','Бауыр мен ұйқы безінің зақымдануынан','Бауырдың боз қабатының зақымдануынан','Бауыр мен көкбауырдың зақымдануынан'],ans:0},
+  {text:'Ферменттер көмегімен энергия бөліне жүретін глюкозаның ыдырауы',opts:['Гликогенолиз','Глюконеогенез','Гликолиз','Гликогенез'],ans:2},
+  {text:'Озон қабатының бұзылуынан жылыжай эффектісін тудыратын заттар',opts:['Инертті газдар','Жоғары радиациалы уран','Хлорфторкөміктертер','Галогендер'],ans:2},
+  {text:'ІІІ санымен көрсетілген тіс бөлігі',opts:['Қаптамасы','Түбірі','Кіреуке','Пульпа'],ans:1},
+  {text:'Қан ұюға қатысатын лейкоцит түрі',opts:['Тромбоцит','Базофиль','Моноцит','Эозинофиль'],ans:1},
+  {text:'Эстроген гормонының рецепторы',opts:['ІІІ эстрофилин','лигнин','І эстрофилин','ренин'],ans:2},
+  {text:'Нуклеин қышқылдарының құрамына кіретін органикалық қосылыс',opts:['С₃Н₆О₃','С₆Н₁₂О₆','С₅Н₁₀О₄','С₁₂Н₂₂О₁₁'],ans:2},
+  {text:'Гуанин мен цитозин сутектік байланыс саны',opts:['5','6','2','3'],ans:3},
+  {text:'Ферменттердің табиғаты нәруыз екенін дәлелдейді',opts:['тыныс алуға қатысатындығы','суда ерімейтіндігі','қыздыру кезіндегі инактивациясы','жоғары арнайылығы'],ans:2},
+  {text:'Қарапайымдардың бөліну түрі',opts:['мейоз','амитоз','лизис','митоз'],ans:1},
+  {text:'Популяцияны зерттейтін экология бөлімі',opts:['Биоэкология','Геоэкология','Демэкология','Аутэкология'],ans:2,
+   ctx:'Популяция – түрдің тіршілік етуінің едәуір аз құрылымдық бірлігі. Ғаламшарымызда бір географиялық нүктеде тіршілік ететін эндемик түрлер бар. Олар бір немесе бірнеше популяциядан тұруы мүмкін. Бір популяция жойылып кетсе, экологиялық апат болмайды. Себебі оның орнын экожүйенің жойылған құрамбөлігін қалпына келтіретін басқа популяция толтыруы мүмкін.'},
+  {text:'Партеногенетикалық ұрпақтары болатын жануар',ctx:'Популяция – түрдің тіршілік етуінің едәуір аз құрылымдық бірлігі. Ғаламшарымызда бір географиялық нүктеде тіршілік ететін эндемик түрлер бар. Олар бір немесе бірнеше популяциядан тұруы мүмкін. Түрлердің көпшілігі Жерде көптеген популяция формасында тіршілік етеді. Түр негізгі экологиялық бірлікке жатады. Бір популяция жойылып кетсе, экологиялық апат болмайды. Себебі оның орнын экожүйенің жойылған құрамбөлігін қалпына келтіретін басқа популяция даралары толтыруы мүмкін. Бірақ бұл кезде эколог ғалымдар популяцияда жүретін үдерістерді мұқият зерттейді. Өйткені олар экологиялық тепе-теңдік көрсеткіші болып табылады.',opts:['Қабылан','Өрмекші','Тотықұс','Біте'],ans:3},
+  {text:'Уақыт бірлігіндегі өсім',ctx:'Популяция – түрдің тіршілік етуінің едәуір аз құрылымдық бірлігі. Ғаламшарымызда бір географиялық нүктеде тіршілік ететін эндемик түрлер бар. Олар бір немесе бірнеше популяциядан тұруы мүмкін. Түрлердің көпшілігі Жерде көптеген популяция формасында тіршілік етеді. Түр негізгі экологиялық бірлікке жатады. Бір популяция жойылып кетсе, экологиялық апат болмайды. Себебі оның орнын экожүйенің жойылған құрамбөлігін қалпына келтіретін басқа популяция даралары толтыруы мүмкін. Бірақ бұл кезде эколог ғалымдар популяцияда жүретін үдерістерді мұқият зерттейді. Өйткені олар экологиялық тепе-теңдік көрсеткіші болып табылады.',opts:['Популяцияның туу','Популяция өсімі','Популяция тығыздығы','Популяция өсім қарқыны'],ans:3},
+  {text:'К-стратегиясына тән ерекшелік',ctx:'Популяция – түрдің тіршілік етуінің едәуір аз құрылымдық бірлігі. Ғаламшарымызда бір географиялық нүктеде тіршілік ететін эндемик түрлер бар. Олар бір немесе бірнеше популяциядан тұруы мүмкін. Түрлердің көпшілігі Жерде көптеген популяция формасында тіршілік етеді. Түр негізгі экологиялық бірлікке жатады. Бір популяция жойылып кетсе, экологиялық апат болмайды. Себебі оның орнын экожүйенің жойылған құрамбөлігін қалпына келтіретін басқа популяция даралары толтыруы мүмкін. Бірақ бұл кезде эколог ғалымдар популяцияда жүретін үдерістерді мұқият зерттейді. Өйткені олар экологиялық тепе-теңдік көрсеткіші болып табылады.',opts:['Тірі қалу мүмкіндігі өте төмен','Санын тез қалпына келтіре алады','Ұрпақ сапасы жоғары','Жылдам қоныстануға бағытталған'],ans:2},
+  {text:'r-стратегиясына тән жануарларды көрсет',ctx:'Популяция – түрдің тіршілік етуінің едәуір аз құрылымдық бірлігі. Ғаламшарымызда бір географиялық нүктеде тіршілік ететін эндемик түрлер бар. Олар бір немесе бірнеше популяциядан тұруы мүмкін. Түрлердің көпшілігі Жерде көптеген популяция формасында тіршілік етеді. Түр негізгі экологиялық бірлікке жатады. Бір популяция жойылып кетсе, экологиялық апат болмайды. Себебі оның орнын экожүйенің жойылған құрамбөлігін қалпына келтіретін басқа популяция даралары толтыруы мүмкін. Бірақ бұл кезде эколог ғалымдар популяцияда жүретін үдерістерді мұқият зерттейді. Өйткені олар экологиялық тепе-теңдік көрсеткіші болып табылады.',opts:['Адамтәрізді маймылдар','Көкқасқа шегірткелер','Мысық тұқымдасындағы жыртқыштар','Пілдер'],ans:1},
+  {type:'match2',text:'Ағзалардың соңғы бөліп шығару өнімдерін сәйкестендіріңіз',left:['Зәр қышқылы','Несепнәр'],right:['Тұщы су бунақденелілер','Құрлықтағы бунақденелілер','Сүйекті балықтар','Ересек бақалар'],ans:{0:[1],1:[2]}},
+  {type:'match2',text:'Биополимерлерді реттілігіне сәйкес сәйкестендіріңіз',left:['Ретті','Ретсіз'],right:['Глицерин','ДНҚ','Крахмал','Цианкобаламин'],ans:{0:[1],1:[2]}},
+  {type:'match2',text:'Ұрық жапырақшаларын мүшелермен сәйкестендіріңіз',left:['Эктодерма','Энтодерма'],right:['Эпидермис','Кеңірдек','Ұма','Аорта (қолқа)'],ans:{0:[0],1:[1]}},
+  {type:'match2',text:'Тыныс алу мүшелерін қызметтермен сәйкестендіріңіз',left:['Өкпе','Көмей'],right:['Газдарды өткізу','Газ алмасу','Дауыс шығару','Ауаны жылыту, ылғалдандыру'],ans:{0:[1],1:[2]}},
+  {type:'match2',text:'Үй жануарларын шыққан орталықтармен сәйкестендіріңіз',left:['Альпака','Нілдік қаз'],right:['Жерорта теңізі','Африка','Қытай-Малай','Оңтүстік Америка'],ans:{0:[3],1:[1]}},
+  {type:'multi',text:'Біросьті буындарға жататындар',opts:['Саусақ сүйектерінің буыны','Жамбас-сан буыны','Иық буыны','Шынтақ пен кәрі жілік арасындағы буын','Кәрі жілік пен білезік арасындағы буын','Тізе буыны'],ans:[0,3]},
+  {type:'multi',text:'Органикалық еріткіштерде ерімейді, редуценттік қасиет жоқ, 200°C-та карамельдер түзеді. Бұл қай көмірсу?',opts:['Лактоза','Фруктоза','Глюкоза','Сахароза','Мальтоза','Ксилоза'],ans:[3]},
+  {type:'multi',text:'IgG иммуноглобулин үшін дұрыс тұжырымдар',opts:['Плацента арқылы қанға өтеді','Сарысулық және сөлдік түрлері бар','Грам оң бактерияларға әсер етеді','Миеломды ауруларда жоғарылайды','АВО қан топтарында кездеседі','Баяу аллергиялық реакция тудырады'],ans:[0,5]},
+  {type:'multi',text:'Жеуге жарамды цианобактерия өкілдері',opts:['Анабена','Триходесмиум','Носток','Азоспириллум','Спирулина','Актиномицеттер'],ans:[1,2,4]},
+  {type:'multi',text:'Фитофтороз ауруына тән сипаттамалар',opts:['Саңырауқұлақтар тудыратын ауру','Ауа-тамшылы жолмен жұғады','Өсімдік сабағында қоңыр дақтар','Тоқішекті зақымдайды','Теріде ірі жаралар','Қоздырушысы вибрион бактериясы'],ans:[0,2]}
+ ]},
+{name:'Химия',emoji:'🧪',count:40,
+ questions:[
+  {text:'Электртерістілік мәндерінің кемуі бойынша орналасқан қатар',opts:['O, N, C, Si, Al','N, C, B, Be, O','B, Al, Si, P, N','Cl, P, Si, Al, B'],ans:0},
+  {text:'MnO₂+HCl→ реакциясындағы барлық коэффициенттер қосындысы',opts:['6','4','9','5'],ans:2},
+  {text:'IIA тобының жоғары оксидтерінің жалпы формуласы',opts:['RO','R₂O₃','RO₂','R₂O'],ans:0},
+  {text:'Мыс(II) сульфаты ерітіндісінен мысты бөліп алу әдісі',opts:['гидрометаллургия','электрометаллургия','пирометаллургия','металлотермия'],ans:1},
+  {text:'Na+H₂SO₄(конц)→Na₂SO₄+H₂S+H₂O реакциясында күкірттің қосып алатын электроны',opts:['2e⁻','8e⁻','6e⁻','4e⁻'],ans:1},
+  {text:'Сулы ерітіндісінде Pb(NO₃)₂ лакмустың түсі',opts:['түссіз','көк','таңқурай','қызыл'],ans:3},
+  {text:'II топтың негізгі топшасы. Оксидінде металл үлесі 84,62% болатын элемент',opts:['Ba','Mg','Be','Sr'],ans:0},
+  {text:'Гибридтенуі sp³-ке сәйкес келетін көмірсутек',opts:['пропен','пропин','пропан','этин'],ans:2},
+  {text:'2CH₄–1500°C→X+3H₂ реакциясындағы X заты',opts:['ацетилен','этилен','көміртек','этан'],ans:0},
+  {text:'Бензол молекуласындағы σ-байланыстар саны',opts:['12','6','14','9'],ans:0},
+  {text:'Гидролиз толық жүретін тұз',opts:['CuSO₄','ZnCl₂','CH₃COOK','Al₂S₃'],ans:3},
+  {text:'Фосфор калий хлоратымен әрекеттескенде хлордың қосатын электрон саны',opts:['4','8','6','2'],ans:1},
+  {text:'Қысым әсер етпейтін реакция',opts:['CO+Cl₂↔COCl₂','2SO₂+O₂↔2SO₃','2NO+O₂↔2NO₂','H₂+I₂↔2HI'],ans:3},
+  {text:'Пропанолдың изомері',opts:['пропанол-1','метилэтил эфирі','бутанон','ацетон'],ans:1},
+  {text:'Температураны 50°C-тан 100°C-ге көтергенде жылдамдық (γ=3)',opts:['243 есе кемиді','81 есе артады','243 есе артады','81 есе кемиді'],ans:2},
+  {text:'Сірке альдегидімен тотықсыздандырғанда 10,8 г Ag түзілді. Альдегид массасы',opts:['4,4 г','3,6 г','2,2 г','4,2 г'],ans:2},
+  {text:'19,5 г ацетиленді тримерлеп бензол алып, Fe(III) тұздарымен бромдау нәтижесіндегі бромбензол массасы',opts:['12,65 г','39,25 г','22,45 г','32,85 г'],ans:1},
+  {text:'160 г 10%-Ba(NO₃)₂ + 50 г 10%-K₂CrO₄. Тұнба массасы',opts:['5,5 г','3,9 г','4,2 г','6,5 г'],ans:1},
+  {text:'10%-Na₂CO₃ дайындауға 54 г кристалдық сода. Судың көлемі (мл)',opts:['170','146','186','197'],ans:1},
+  {text:'75%CH₄,15%C₂H₆,5%C₃H₈,2%H₂,2%N₂,1%CO₂ — 2м³ қоспаны жағуға жұмсалатын O₂',opts:['6,57 м³','5,57 м³','3,07 м³','4,57 м³'],ans:0},
+  {text:'Нәруыз ерітіндісіне NaOH + CuSO₄ тамшылатқанда пайда болатын түс',opts:['сары','қызыл','күлгін','қара'],ans:2},
+  {text:'15 г спирт + сірке қышқылы → 20,4 г эфир (шығым 80%). Спирт',opts:['пентанол','бутанол','пропанол','этанол'],ans:1},
+  {text:'Қаныққан біратомды спиртті дегидратациялағанда CO₂-мен салыстырғандағы тығыздық 0,95. Зат формуласы',opts:['C₅H₈','C₃H₆','C₂H₄','C₄H₈'],ans:1},
+  {text:'Шығым 90%, 10% қоспа бар 100 кг тристеаринді гидролиздеудегі сабын массасы',opts:['75,7','83,5','54,2','67,9'],ans:0},
+  {text:'Нуклидтің массалық саны 37, протондар үлесі 45,95%. Қай элемент?',opts:['калий','хлор','алюминий','фосфор'],ans:1},
+  {text:'A газы (тұншықтырғыш, өткір иісті)',opts:['күкіртсутек','күкіртті қышқыл','күкірт ангидриді','күкіртті газ'],ans:3,
+   ctx:'Күкірттің маңызды қосылыстарына тұншықтырғыш, өткір иісті A газы және түссіз ұшқыш сұйықтық – B қосылысы жатады. Зертханада натрий сульфитінен, өнеркәсіпте мырыш сульфидін өртеп алады. Осы газдар атмосферада су буымен әрекеттесіп қышқыл жаңбырға айналады. A + 2H₂S → 3S + 2H₂O'},
+  {text:'Өнеркәсіпте A газын алатын қосылыс',ctx:'Күкірттің маңызды қосылыстарына тұншықтырғыш, өткір иісті A газы және түссіз ұшқыш сұйықтық – B қосылысы жатады. Бұл оксидтерді зертханада натрий сульфитінен алса, өнеркәсіпте мырыш сульфидін өртеп алады. Өндіріс орындарынан бөлінген осындай газдар атмосферада су буымен әрекеттесіп қышқыл жаңбырға айналады. Төмендегі реакция теңдеуінде күкірт қосылыстары әрі тотықтырғыш, әрі тотықсыздандырғыш қасиет көрсетеді: A + 2H₂S → 3S + 2H₂O',opts:['ZnSO₄','ZnSO₃','Zn(NO₃)₂','ZnS'],ans:3},
+  {text:'A күкірт қосылысының тотықсыздандырғыш қасиетін көрсететін тотығу дәрежесі',ctx:'Күкірттің маңызды қосылыстарына тұншықтырғыш, өткір иісті A газы және түссіз ұшқыш сұйықтық – B қосылысы жатады. Бұл оксидтерді зертханада натрий сульфитінен алса, өнеркәсіпте мырыш сульфидін өртеп алады. Өндіріс орындарынан бөлінген осындай газдар атмосферада су буымен әрекеттесіп қышқыл жаңбырға айналады. Төмендегі реакция теңдеуінде күкірт қосылыстары әрі тотықтырғыш, әрі тотықсыздандырғыш қасиет көрсетеді: A + 2H₂S → 3S + 2H₂O',opts:['S⁺⁴→S⁻²','S⁺⁶→S⁺⁴','S⁻²→S⁰','S⁺⁴→S⁰'],ans:3},
+  {text:'100 г 4,5% H₂SO₄ ерітіндісінде 10 г H₂SO₃ еріткенде H₂SO₄ үлесі (%)',ctx:'Күкірттің маңызды қосылыстарына тұншықтырғыш, өткір иісті A газы және түссіз ұшқыш сұйықтық – B қосылысы жатады. Бұл оксидтерді зертханада натрий сульфитінен алса, өнеркәсіпте мырыш сульфидін өртеп алады. Өндіріс орындарынан бөлінген осындай газдар атмосферада су буымен әрекеттесіп қышқыл жаңбырға айналады. Төмендегі реакция теңдеуінде күкірт қосылыстары әрі тотықтырғыш, әрі тотықсыздандырғыш қасиет көрсетеді: A + 2H₂S → 3S + 2H₂O',opts:['15,2','19,1','22,6','20,2'],ans:1},
+  {text:'21,75 г тұзға HCl + A затын тотықтырғанда B заты 3,36 л. 1:1 қатынас. Бастапқы тұз',ctx:'Күкірттің маңызды қосылыстарына тұншықтырғыш, өткір иісті A газы және түссіз ұшқыш сұйықтық – B қосылысы жатады. Бұл оксидтерді зертханада натрий сульфитінен алса, өнеркәсіпте мырыш сульфидін өртеп алады. Өндіріс орындарынан бөлінген осындай газдар атмосферада су буымен әрекеттесіп қышқыл жаңбырға айналады. Төмендегі реакция теңдеуінде күкірт қосылыстары әрі тотықтырғыш, әрі тотықсыздандырғыш қасиет көрсетеді: A + 2H₂S → 3S + 2H₂O',opts:['K₂SO₃','ZnSO₃','ZnSO₄','Na₂SO₃'],ans:3},
+  {type:'match2',text:'Хлор қосылыстарын тотығу дәрежесімен сәйкестендіріңіз',left:['натрий гипохлориті','калий хлораты'],right:['–1','+5','+3','+1'],ans:{0:[3],1:[1]}},
+  {type:'match2',text:'Өнімдерді реагенттер қатынасымен сәйкестендіріңіз',left:['темір(III) дигидроксохлориді','темір(III) гидроксобромиді'],right:['ν(Fe(OH)₃):ν(HCl)=1:2','ν(Fe(OH)₃):ν(HBr)=1:1','ν(Fe(OH)₃):ν(HCl)=1:1','ν(Fe(OH)₃):ν(HBr)=1:2'],ans:{0:[0],1:[1]}},
+  {type:'match2',text:'Реакция теңдеулерін атауымен сәйкестендіріңіз',left:['6CO₂+6H₂O→C₆H₁₂O₆+6O₂','(C₆H₁₀O₅)+nH₂O→nC₆H₁₂O₆'],right:['А.Бутлеров реакциясы','Крахмалдың гидролизі','Фотосинтез реакциясы','Тотығу реакциясы'],ans:{0:[2],1:[1]}},
+  {type:'match2',text:'Алкиндерді изомерлер типімен сәйкестендіріңіз',left:['Көміртегі қаңқасы изомері','Класаралық изомер'],right:['пентин-1, пентин-2','пентин-1, 3-метилбутин-1','пентин-2, бутадиен-1,3','пентин-1, пентадиен-1,3'],ans:{0:[1],1:[3]}},
+  {type:'match2',text:'Алкендерді тотықтырғанда түзілетін өнім (Cu,Fe,Pd/O₂)',left:['Этилен','Пропилен'],right:['ацетон','этанол','этаналь','пропанол'],ans:{0:[2],1:[0]}},
+  {type:'multi',text:'²²⁶₈₈Ra—α→X—α→Y—β→²¹⁸₈₅At. X және Y',opts:['²²²₈₄Po','²²⁷₈₉Ac','²¹⁸₈₄Po','²³⁰₈₉At','²³⁰₉₀Th','²²²₈₆Rn'],ans:[5,0]},
+  {type:'multi',text:'N₂+H₂⇄NH₃+Q кинетикалық теңдеуі және жылдамдықты арттыратын жағдай',opts:['температураны төмендету','NH₃ концентрациясын арттыру','v=k·C(H₂)','қысымды арттыру','v=k·C(N₂)·C³(H₂)','v=k·C(N₂)·C(H₂)'],ans:[3,4]},
+  {type:'multi',text:'Нитробензолды өршіткі қатысында алуға болатын зат',opts:['метиламин','анилин','этанол','бензол','ксилол','фенол'],ans:[1]},
+  {type:'multi',text:'K₂SiO₃+H₂O+CO₂→ реакция өнімдері',opts:['оттек газы','көмір қышқылы','калий карбонаты','кремний(IV) оксиді','кремний қышқылы','сутек газы'],ans:[2,4]},
+  {type:'multi',text:'15% қоспасы бар боксит. 26 г Al алынды (шығым 96,3%). Боксит массасы (г)',opts:['60','87','40','47','43','51'],ans:[1]}
+ ]}
+];
+
+const TOTAL=SUBJECTS.reduce((s,sub)=>s+sub.count,0);
+let studentName='',studentPhone='';
+let answers={};
+let curSI=0,curQI=0;
+let timerSecs=4*3600;
+let timerInterval=null;
+let selectedLeft=null;
+let submitted=false;
+
+function startExam(){
+  const ln=document.getElementById('inLastName').value.trim();
+  const fn=document.getElementById('inFirstName').value.trim();
+  const ph=document.getElementById('inPhone').value.trim();
+  if(!ln||!fn){alert('Тегіңіз бен атыңызды енгізіңіз!');return;}
+  studentName=ln+' '+fn; studentPhone=ph;
+  document.getElementById('headerName').textContent='· '+studentName;
+  showScreen('examScreen');
+  buildTabs(); startTimer(); renderQ();
+}
+
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+function startTimer(){
+  timerInterval=setInterval(()=>{
+    timerSecs--;
+    const h=Math.floor(timerSecs/3600);
+    const m=Math.floor((timerSecs%3600)/60);
+    const s=timerSecs%60;
+    const el=document.getElementById('timerEl');
+    el.textContent=h+':'+(m<10?'0':'')+m+':'+(s<10?'0':'')+s;
+    if(timerSecs<=600) el.classList.add('warn');
+    if(timerSecs<=0){clearInterval(timerInterval);finishExam(true);}
+  },1000);
+}
+
+function buildTabs(){
+  const tabs=document.getElementById('subjectTabs');
+  tabs.innerHTML='';
+  SUBJECTS.forEach((sub,i)=>{
+    const t=document.createElement('div');
+    t.className='stab'+(i===0?' active':'');
+    t.innerHTML=sub.emoji+' '+sub.name;
+    t.onclick=()=>{curSI=i;curQI=0;selectedLeft=null;buildTabs();renderQ();};
+    tabs.appendChild(t);
+  });
+}
+
+function qKey(si,qi){return si+'-'+qi;}
+function isAnswered(si,qi){return answers[qKey(si,qi)]!==undefined;}
+
+function calcScore(si,qi){
+  const q=SUBJECTS[si].questions[qi];
+  const a=answers[qKey(si,qi)];
+  if(a===undefined) return 0;
+  if(q.type==='multi'){
+    return JSON.stringify([...q.ans].sort((x,y)=>x-y))===JSON.stringify([...a].sort((x,y)=>x-y))?1:0;
+  }
+  if(q.type==='match2'){
+    for(let k in q.ans){if(!a[k]||a[k][0]!==q.ans[k][0])return 0;}
+    return 1;
+  }
+  return a[0]===q.ans?1:0;
+}
+
+function getCtx(sub,qi){
+  if(!sub.ctxMap||!sub.contexts) return null;
+  const ctxIdx=sub.ctxMap[qi];
+  return ctxIdx!==undefined?sub.contexts[ctxIdx]:null;
+}
+
+function renderQ(){
+  // update tabs active
+  document.querySelectorAll('.stab').forEach((t,i)=>t.classList.toggle('active',i===curSI));
+  const sub=SUBJECTS[curSI];
+  const q=sub.questions[curQI];
+  const key=qKey(curSI,curQI);
+  const ua=answers[key];
+
+  // progress
+  let totalAnswered=0,totalAll=0;
+  SUBJECTS.forEach((s,si)=>s.questions.forEach((_,qi)=>{totalAll++;if(isAnswered(si,qi))totalAnswered++;}));
+  const pct=Math.round(totalAnswered/totalAll*100);
+
+  let html=`<div class="q-card">
+    <div class="q-progress"><div class="q-progress-fill" style="width:${pct}%"></div></div>
+    <div class="q-meta">${sub.name} · ${curQI+1} / ${sub.count} сұрақ</div>`;
+
+  // context
+  const ctx=q.ctx||(sub.ctxMap?getCtx(sub,curQI):null);
+  if(ctx) html+=`<div class="context-block"><strong>Мәтін</strong>${ctx.replace(/\n/g,'<br>')}</div>`;
+
+  html+=`<div class="q-text">${q.text.replace(/\n/g,'<br>')}</div>`;
+
+  if(q.type==='multi'){
+    const sel=ua||[];
+    html+=`<div class="multi-tag">☑ Бірнеше жауап таңдаңыз</div><div class="options">`;
+    q.opts.forEach((opt,idx)=>{
+      const isSel=sel.includes(idx);
+      html+=`<button class="opt${isSel?' selected':''}" onclick="toggleMulti('${key}',${idx})"><span class="opt-letter">${String.fromCharCode(65+idx)}</span><span>${opt}</span></button>`;
+    });
+    html+=`</div>`;
+  } else if(q.type==='match2'){
+    const ms=ua||{};
+    html+=`<div class="match-hint">Сол жақтан таңдап, оң жақпен сәйкестендіріңіз</div><div class="match-grid"><div><div class="match-col-label">Сол жақ</div>`;
+    q.left.forEach((item,li)=>{
+      let cls='match-item';
+      if(selectedLeft===li) cls+=' selected';
+      else if(ms[li]!==undefined) cls+=' matched';
+      const tag=ms[li]!==undefined?' → '+q.right[ms[li][0]]:'';
+      html+=`<button class="${cls}" onclick="selLeft(${li})">${item}${tag}</button>`;
+    });
+    html+=`</div><div><div class="match-col-label">Оң жақ</div>`;
+    q.right.forEach((item,ri)=>{
+      html+=`<button class="match-item" onclick="selRight(${ri})">${item}</button>`;
+    });
+    html+=`</div></div>`;
+  } else {
+    html+=`<div class="options">`;
+    q.opts.forEach((opt,idx)=>{
+      const isSel=ua&&ua[0]===idx;
+      html+=`<button class="opt${isSel?' selected':''}" onclick="selectSingle('${key}',${idx})"><span class="opt-letter">${String.fromCharCode(65+idx)}</span><span>${opt}</span></button>`;
+    });
+    html+=`</div>`;
+  }
+
+  const isFirst=(curSI===0&&curQI===0);
+  const isLast=(curSI===SUBJECTS.length-1&&curQI===sub.questions.length-1);
+  html+=`<div class="q-nav-btns">
+    <button class="btn-nav" onclick="prevQ()" ${isFirst?'disabled':''}>← Артқа</button>
+    <span class="q-counter">${totalAnswered}/${totalAll}</span>`;
+  if(!isLast) html+=`<button class="btn-nav btn-nav-primary" onclick="nextQ()">Келесі →</button>`;
+  else html+=`<button class="btn-nav btn-nav-primary" onclick="confirmFinish()">✓ Аяқтау</button>`;
+  html+=`</div></div>`;
+  document.getElementById('qcard').innerHTML=html;
+}
+
+function selectSingle(key,idx){
+  answers[key]=[idx]; renderQ();
+}
+function toggleMulti(key,idx){
+  if(!answers[key]) answers[key]=[];
+  const arr=answers[key],pos=arr.indexOf(idx);
+  if(pos===-1) arr.push(idx); else arr.splice(pos,1);
+  renderQ();
+}
+function selLeft(li){selectedLeft=li;renderQ();}
+function selRight(ri){
+  if(selectedLeft===null) return;
+  const key=qKey(curSI,curQI);
+  if(!answers[key]) answers[key]={};
+  answers[key][selectedLeft]=[ri]; selectedLeft=null; renderQ();
+}
+function prevQ(){
+  if(curQI>0){curQI--;selectedLeft=null;renderQ();}
+  else if(curSI>0){curSI--;curQI=SUBJECTS[curSI].questions.length-1;selectedLeft=null;buildTabs();renderQ();}
+}
+function nextQ(){
+  const sub=SUBJECTS[curSI];
+  if(curQI<sub.questions.length-1){curQI++;selectedLeft=null;renderQ();}
+  else if(curSI<SUBJECTS.length-1){curSI++;curQI=0;selectedLeft=null;buildTabs();renderQ();}
+}
+function confirmFinish(){
+  finishExam(false);
+}
+function finishExam(timeUp){
+  if(submitted) return;
+  submitted=true;
+  clearInterval(timerInterval);
+  showResult(timeUp);
+}
+
+function showResult(timeUp){
+  showScreen('resultScreen');
+  let totalScore=0;
+  const subScores=SUBJECTS.map((sub,si)=>{
+    let correct=0;
+    sub.questions.forEach((_,qi)=>{correct+=calcScore(si,qi);});
+    totalScore+=correct;
+    return{name:sub.name,emoji:sub.emoji,correct,total:sub.count};
+  });
+  const pct=Math.round(totalScore/TOTAL*100);
+  const medal=pct>=90?'🏆':pct>=75?'🥇':pct>=60?'🥈':pct>=40?'🥉':'📝';
+
+  let html=`<div class="result-header">
+    <div class="result-medal">${medal}</div>
+    <div class="result-name">${studentName}</div>
+    <div class="result-score">${totalScore} <span>/ ${TOTAL}</span></div>
+    <div class="result-pct">${pct}% · ${timeUp?'Уақыт бітті ⌛':'Аяқталды ✅'}</div>
+  </div><div class="result-subjects">`;
+  subScores.forEach(s=>{
+    const p=Math.round(s.correct/s.total*100);
+    html+=`<div class="rs-row"><div class="rs-name">${s.emoji} ${s.name}</div><div class="rs-bar-wrap"><div class="rs-bar" style="width:${p}%"></div></div><div class="rs-score">${s.correct}/${s.total}</div></div>`;
+  });
+  html+=`</div><div class="result-note">Бұл пробный нәтиже. Нақты ҰБТ-да тапсыру шарттары ресми нұсқаулыққа сәйкес болады.</div>
+  <div class="review-title">Жауаптарды тексеру</div>`;
+
+  SUBJECTS.forEach((sub,si)=>{
+    sub.questions.forEach((q,qi)=>{
+      const ok=calcScore(si,qi)===1;
+      const ua=answers[qKey(si,qi)];
+      html+=`<div class="review-item ${ok?'r-correct':'r-wrong'}">
+        <div class="ri-num">${sub.name} · ${qi+1}-сұрақ ${ok?'✓ Дұрыс':'✗ Қате'}</div>
+        <div class="ri-q">${q.text.replace(/\n/g,' ').substring(0,120)}${q.text.length>120?'...':''}</div>
+        <div class="ri-ans">`;
+      if(q.type==='multi'){
+        html+=`<span class="c">✓ ${q.ans.map(a=>String.fromCharCode(65+a)+') '+q.opts[a]).join(', ')}</span>`;
+        if(ua&&ua.length>0&&!ok) html+=`<br><span class="w">✗ ${ua.map(a=>String.fromCharCode(65+a)+') '+q.opts[a]).join(', ')}</span>`;
+      } else if(q.type==='match2'){
+        html+=`<span class="c">✓ ${q.left.map((l,li)=>l+' → '+q.right[q.ans[li][0]]).join(' | ')}</span>`;
+      } else {
+        html+=`<span class="c">✓ ${String.fromCharCode(65+q.ans)}) ${q.opts[q.ans]}</span>`;
+        if(ua&&ua[0]!==q.ans) html+=`<br><span class="w">✗ ${String.fromCharCode(65+ua[0])}) ${q.opts[ua[0]]}</span>`;
+      }
+      html+=`</div></div>`;
+    });
+  });
+
+  document.getElementById('resultCard').innerHTML=html;
+  sendTelegram(totalScore,pct,subScores,timeUp);
+}
+
+function sendTelegram(total,pct,subScores,timeUp){
+  const now=new Date();
+  const dt=now.toLocaleDateString('ru-RU')+' '+now.toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'});
+  const medal=pct>=90?'🏆':pct>=75?'🥇':pct>=60?'🥈':pct>=40?'🥉':'📝';
+  let lines='';
+  subScores.forEach(s=>{lines+=s.emoji+' '+s.name+': '+s.correct+'/'+s.total+'\n';});
+  const msg='📊 *Жаңа нәтиже — 24-нұсқа*\n'
+    +'━━━━━━━━━━━━━\n'
+    +'👤 *Аты:* '+studentName+'\n'
+    +'📱 *Тел:* '+(studentPhone||'—')+'\n'
+    +'🕐 *Уақыт:* '+dt+'\n'
+    +'⏱ '+(timeUp?'Уақыт бітті ⌛':'Аяқтады ✅')+'\n'
+    +'━━━━━━━━━━━━━\n'
+    +lines
+    +'━━━━━━━━━━━━━\n'
+    +medal+' *'+total+'/'+TOTAL+' ('+pct+'%)*';
+  fetch('https://api.telegram.org/bot'+BOT_TOKEN+'/sendMessage',{
+    method:'POST',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({chat_id:CHAT_ID,text:msg,parse_mode:'Markdown'})
+  }).catch(()=>{});
+}
+</script>
+</body>
+</html>
